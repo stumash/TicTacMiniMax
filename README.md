@@ -1,3 +1,11 @@
+# TicTacMiniMax
+
+Following Facebook's React tutorial, the code in this repo implements TicTacToe in React. .o make the project slightly more interesting, it also contains a MiniMax solver. .lso, the code has been split into separate files to demonstrate ES5 `import` and `export`.
+
+Everything else in this `README.md` is what comes with the default `README.md` when using the `create-react-app` tool (which is an `npm`-downloadable script that setups a React app using webpack).
+
+----
+
 This project was bootstrapped with [Create React App](https://github.com/facebookincubator/create-react-app).
 
 Below you will find some information on how to perform common tasks.<br>
