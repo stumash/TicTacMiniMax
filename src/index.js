@@ -8,17 +8,37 @@ import { Board } from './board.js';
 class Game extends React.Component {
   constructor(props) {
     super(props);
+
     this.state = {
       history: [
-        [ [null, null, null], [null, null, null], [null, null, null] ]
+        [
+          [null, null, null],
+          [null, null, null],
+          [null, null, null],
+        ],
       ],
-      xIsNext: true
+      stepNumber: 0,
+      xIsNext: true,
     };
+
+    this.lines = [
+      // horizontal lines
+      [ [0,0], [0,1], [0,2] ],
+      [ [1,0], [1,1], [1,2] ],
+      [ [2,0], [2,1], [2,2] ],
+      // vertical lines
+      [ [0,0], [1,0], [2,0] ],
+      [ [0,1], [1,1], [2,1] ],
+      [ [0,2], [1,2], [2,2] ],
+      // diagonal lines
+      [ [0,0], [1,1], [2,2] ],
+      [ [2,0], [1,1], [0,2] ],
+    ];
   }
 
   render() {
     const history = this.state.history;
-    const currentSquares = history[history.length - 1];
+    const currentSquares = history[this.state.stepNumber];
     const winner = this.detectWinner(currentSquares);
 
     const moves = history.map((move, moveNumber) => {
@@ -26,7 +46,7 @@ class Game extends React.Component {
         'Go to move #' + moveNumber :
         'Go to game start';
       return (
-        <li>
+        <li key={move}>
           <button onClick={() => this.jumpTo(moveNumber)}>{desc}</button>
         </li>
       );
@@ -56,36 +76,24 @@ class Game extends React.Component {
   }
 
   handleClick(i,j) {
-    const history = this.state.history;
+    const history = this.state.history.slice(0, this.state.stepNumber + 1);
     const currentSquares = deepCopy(history[history.length - 1]);
     if (currentSquares[i][j] || this.detectWinner(currentSquares)) {
       return;
     }
 
     currentSquares[i][j] = this.state.xIsNext? 'X': 'O';
-    this.setState({ // causes re-render
+    this.setState({
       history: [...history, currentSquares],
+      stepNumber: history.length,
       xIsNext: !this.state.xIsNext,
     });
   }
 
   detectWinner(squares) {
-    const lines = [
-      // horizontal lines
-      [ [0,0], [0,1], [0,2] ],
-      [ [1,0], [1,1], [1,2] ],
-      [ [2,0], [2,1], [2,2] ],
-      // vertical lines
-      [ [0,0], [1,0], [2,0] ],
-      [ [0,1], [1,1], [2,1] ],
-      [ [0,2], [1,2], [2,2] ],
-      // diagonal lines
-      [ [0,0], [1,1], [2,2] ],
-      [ [2,0], [1,1], [0,2] ],
-    ];
 
     let winner;
-    for (let line of lines) {
+    for (let line of this.lines) {
       let xs_and_os = line.map(pos => squares[pos[0]][pos[1]])
       if (xs_and_os.every(x_or_o => x_or_o === 'X')) {
         winner = 'X'; break;
@@ -97,6 +105,13 @@ class Game extends React.Component {
 
     return winner;
   }
+
+  jumpTo(stepNumber) {
+    this.setState({
+      stepNumber: stepNumber,
+      xIsNext: (stepNumber % 2) === 0,
+    });
+  }
 }
 
 // ========================================
@@ -105,5 +120,3 @@ ReactDOM.render(
   <Game />,
   document.getElementById('root')
 );
-
-
