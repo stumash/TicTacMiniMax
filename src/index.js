@@ -4,6 +4,7 @@ import ReactDOM from 'react-dom';
 import './index.css';
 import { deepCopy } from './utils.js';
 import { Board } from './board.js';
+import { AiButton } from './aibutton.js';
 
 class Game extends React.Component {
   constructor(props) {
@@ -68,6 +69,10 @@ class Game extends React.Component {
         />
         </div>
         <div className="game-info">
+          <AiButton
+            squares={currentSquares}
+            clickSquare={(i,j) => this.handleClick(i,j)}
+          />
           <div>{status}</div>
           <ol>{moves}</ol>
         </div>
@@ -91,7 +96,6 @@ class Game extends React.Component {
   }
 
   detectWinner(squares) {
-
     let winner;
     for (let line of this.lines) {
       let xs_and_os = line.map(pos => squares[pos[0]][pos[1]])
