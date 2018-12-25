@@ -1,5 +1,7 @@
 import React from 'react';
 
+import { deepCopy } from './utils.js'
+
 export function AiButton(props) {
   return (
     <button onClick={() => props.clickSquare(
@@ -12,13 +14,32 @@ export function AiButton(props) {
 
 /**
  *
- * ALL THINGS MINIMAX ARE BELOW
+ * ALL THINGS MINIMAX BELOW
  *
  */
 
 
 function bestMove(squares, isTurnX) {
-  // what to do? what to do?
+  // what to do? what to do? lel
+}
+
+function possibleBoards(squares, isTurnX) {
+  const retval = [];
+  squares.forEach((row,i) => {
+    row.forEach((square,j) => {
+      if (square !== 'X' && square !== 'O') {
+        const copySquares = deepCopy(squares);
+        if (isTurnX) {
+          copySquares[i][j] = 'X';
+          retval.push(copySquares);
+        } else {
+          copySquares[i][j] = 'O';
+          retval.push(copySquares);
+        }
+      }
+    });
+  });
+  return retval;
 }
 
 // map integer representation of board state to win 1, loss -1, or draw 0 for X
@@ -54,6 +75,11 @@ const boardLines = [
   [ [2,0], [1,1], [0,2] ],
 ];
 
+function equivalentBoardsAsInts(squares, isTurnX) {
+    return equivalentBoards(squares).map((equivSquares) => {
+        squaresToInt(equivSquares,isTurnX)
+    });
+}
 
 // squares (board state) to 'base4' int representation for faster lookup in Map
 function squaresToInt(squares, isTurnX) {
