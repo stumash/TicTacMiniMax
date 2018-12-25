@@ -72,6 +72,7 @@ class Game extends React.Component {
           <AiButton
             squares={currentSquares}
             clickSquare={(i,j) => this.handleClick(i,j)}
+            isTurnX={() => this.state.xIsNext}
           />
           <div>{status}</div>
           <ol>{moves}</ol>

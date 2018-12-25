@@ -5,7 +5,7 @@ import { deepCopy } from './utils.js'
 export function AiButton(props) {
   return (
     <button onClick={() => props.clickSquare(
-      ...bestMove( props.currentSqaures(), props.isTurnX() )
+      ...bestMove( props.currentSquares, props.isTurnX() )
     )}>
       Do Best Next Move
     </button>
@@ -21,6 +21,7 @@ export function AiButton(props) {
 
 function bestMove(squares, isTurnX) {
   // what to do? what to do? lel
+  return [0,0];
 }
 
 function possibleBoards(squares, isTurnX) {
