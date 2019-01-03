@@ -1,15 +1,20 @@
 import React from 'react';
 
-import { deepCopy } from './utils.js'
+import { X, O, deepCopy } from './utils.js'
 
 export function AiButton(props) {
   return (
-    <button onClick={() => props.clickSquare(
-      ...bestMove( props.currentSquares, props.isTurnX() )
-    )}>
+    <button onClick={() => onClick(props.currentSquares, props.isTurnX())}>
       Do Best Next Move
     </button>
   );
+}
+
+function onClick(squares, isTurnX) {
+  const move = miniMax( this.currentSquares, this.isTurnX() );
+  if (move !== -1 && move !== 1) {
+    this.clickSquare(...move);
+  }
 }
 
 /**
@@ -18,23 +23,46 @@ export function AiButton(props) {
  *
  */
 
-
 function bestMove(squares, isTurnX) {
   // what to do? what to do? lel
   return [0,0];
+  // return miniMax(squares, isTurnX) + some logic
+}
+
+function miniMax(squares, isTurnX) {
+  // base case
+  const winner = detectWinner(squares);
+  if (winner === X) {
+    return 1;
+  } else if (winner === O) {
+    return -1;
+  } else if (boardFull(squares)) {
+    return 0;
+  }
+}
+
+function boardFull(squares) {
+  squares.forEach((row, i) => {
+    row.forEach((square, j) => {
+      if (square !== X || square !== O) {
+        return false;
+      }
+    });
+  });
+  return true;
 }
 
 function possibleBoards(squares, isTurnX) {
   const retval = [];
   squares.forEach((row,i) => {
     row.forEach((square,j) => {
-      if (square !== 'X' && square !== 'O') {
+      if (square !== X && square !== O) {
         const copySquares = deepCopy(squares);
         if (isTurnX) {
-          copySquares[i][j] = 'X';
+          copySquares[i][j] = X;
           retval.push(copySquares);
         } else {
-          copySquares[i][j] = 'O';
+          copySquares[i][j] = O;
           retval.push(copySquares);
         }
       }
@@ -51,14 +79,13 @@ function detectWinner(squares) {
   for (let line of boardLines) {
     let xs_and_os = line.map(pos => squares[pos[0]][pos[1]]);
 
-    if (xs_and_os.every(x_or_o => x_or_o === 'X')) {
-      winner = 'X'; break;
+    if (xs_and_os.every(x_or_o => x_or_o === X)) {
+      winner = X; break;
     }
-    else if (xs_and_os.every(x_or_o => x_or_o === 'O')) {
-      winner = 'O'; break;
+    else if (xs_and_os.every(x_or_o => x_or_o === O)) {
+      winner = O; break;
     }
   }
-
   return winner;
 }
 
@@ -90,9 +117,9 @@ function squaresToInt(squares, isTurnX) {
   // each of the 9 squares get two bits in the int representation
   nineSquares.forEach((s, i) => {
     const shift = i*2;
-    if (s === 'X') {
+    if (s === X) {
       intRepresentation |= 1 << shift;
-    } else if (s === 'O') {
+    } else if (s === O) {
       intRepresentation |= 2 << shift;
     }
   });
